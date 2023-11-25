@@ -1,0 +1,19 @@
+{
+  "name": "hamzel_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zelkarnayn/hamzel_backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zelkarnayn/hamzel_backend/issues"
+  },
+  "homepage": "https://github.com/zelkarnayn/hamzel_backend#readme"
+}
