@@ -1,28 +1,26 @@
 const express = require("express");
-const Todo = require("../models");
-
+const { Article, Comment, User } = require("../models/models");
 
 const router = express.Router();
 
-router.post("/todos", async (req, res) => {
-    const { title, discription } = req.body;
-    console.log(title, discription);
+router.post("/articles", async (req, res) => {
+    const { title, text, author } = req.body;
     try {
-        const todo = await Todo.create({title, discription})
-        res.json(todo)
+        const article = await Article.create({ title, text, author })
+        res.json(article)
     } catch (error) {
-        res.json({error: error.message})
+        res.json({ error: error.message })
     }
 })
-router.get("/todos", async (req, res) => {
+router.get("/articles", async (req, res) => {
     try {
-        const todos = await Todo.findAll()
-        res.json()
+        const articles = await Article.findAll()
+        res.json(articles)
     } catch (error) {
-        res.json({error: error.message})
+        res.json({ error: error.message })
     }
 })
-router.delete("/todos/:id", (req, res) => {})
-router.patch("/todos/:id", (req, res) => {})
+router.delete("/articles/:id", (req, res) => { })
+router.patch("/articles/:id", (req, res) => { })
 
 module.exports = router;
