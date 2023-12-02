@@ -53,6 +53,12 @@ Article.init({
             key: 'id'
         }
     },
+    category: {
+        type: DataTypes.ENUM,
+        values: ['REACT', 'JS', 'ANGULAR', 'VUE'],
+        defaultValue: 'JS',
+        allowNull: false
+    },
     likes: {
         type: DataTypes.INTEGER,
         allowNull: true,
