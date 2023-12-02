@@ -1,14 +1,10 @@
 const { DataTypes, Model } = require('sequelize')
 const { sequelize } = require('../server');
+const { text } = require('express');
 
 class User extends Model {}
 User.init({
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    firs_name: {
+    first_name: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -17,7 +13,8 @@ User.init({
         allowNull: false
     },
     role: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM,
+        values: ['user', 'admin', 'moderator'],
         defaultValue: 'user'
     },
     email: {
@@ -44,6 +41,10 @@ Article.init({
     text: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true
     },
     author: {
         type: DataTypes.INTEGER,
@@ -119,3 +120,21 @@ module.exports = {
     Comment
 }
 
+// COMMENT {
+//     text,
+//     article,
+//     author,
+// }
+
+// USER {
+//     firs_name,
+//     last_name,
+//     email,
+//     password
+// }
+
+// ARTICLE {
+//     title,
+//     text,
+//     author,
+// }

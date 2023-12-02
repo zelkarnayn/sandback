@@ -1,11 +1,21 @@
 const express = require('express')
 const { sequelize } = require('./server.js')
+const path = require('path')
 const app = express()
 const cors = require('cors')
 const port = 3000
 const models = require('./models/models.js')
+const fileUpload = require('express-fileupload')
+const errorMiddleware = require('./middleware/ErrorHandlingMiddleware.js')
 
 app.use(cors())
+app.use(express.json())
+app.use(express.static(path.resolve(__dirname, 'static')))
+app.use(fileUpload({}))
+app.use(require('./routes/index.routes.js'))
+
+// Обработка ошибок
+app.use(errorMiddleware)
 
 const start = (async () => {
   try {
@@ -17,11 +27,6 @@ const start = (async () => {
   }
 })()
 
-app.get('/', (req, res) => {
-  res.json('Hello World!')
-})
 
-app.use(express.json())
-app.use(require('./routes/index.js'))
 
 
