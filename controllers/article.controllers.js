@@ -54,6 +54,7 @@ class articleControllers {
         const article = await Article.findOne({ where: { id } })
         return res.json(article)
     }
+    
     // В params надо передать id статьи, а всю прочую информация- в body (title, text, author, category(VUE, JS, REACT, ANGULAR))
     async patchArticle(req, res) {
         const { id } = req.params
