@@ -1,6 +1,5 @@
 const { DataTypes, Model } = require('sequelize')
 const { sequelize } = require('../server');
-const { text } = require('express');
 
 class User extends Model {}
 User.init({
@@ -29,8 +28,27 @@ User.init({
     isActive: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    activationLink: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {sequelize, modelName: 'User'})
+
+class Token extends Model {}
+Token.init({
+    user: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: User, 
+            key: 'id'
+        }
+    },
+    refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}, {sequelize, modelName: 'Token'});
 
 class Article extends Model {}
 Article.init({
@@ -123,7 +141,8 @@ Comment.belongsTo(User)
 module.exports = {
     User,
     Article,
-    Comment
+    Comment,
+    Token
 }
 
 // COMMENT {
