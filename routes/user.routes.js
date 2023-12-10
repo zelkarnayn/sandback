@@ -11,4 +11,8 @@ router.get('/activate/:link', userControllers.activate)
 router.get('/refresh', userControllers.refresh)
 router.get('/users', authMiddleware, userControllers.getUsers)
 
+router.get('/test', (req, res) => {
+    res.json('Работает')
+})
+
 module.exports = router;
