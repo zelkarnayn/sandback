@@ -1,34 +1,75 @@
-const ApiError = require("../error/ApiError");
-const { User } = require("../models/models");
+const ApiError = require("../error/ApiError")
+const userService = require("../service/user.service")
+const { validationResult } = require('express-validator')
 
+class userControllers {
 
-class userController {
-    async getUser(req, res) {}
-
-    async getAllUser(req, res) {
-        const users = await User.findAll()
-        return res.json(users)
+    async registration(req, res, next) {
+        try {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return next(ApiError.badRequest('Ошибка при валидации'))
+            }
+            const { email, first_name, last_name, password } = req.body
+            const userData = await userService.registration(email, password, first_name, last_name)
+            res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+            return res.json(userData)
+        } catch (error) {
+            next(error)
+        }
     }
 
-    async postUser(req, res, next) {
-        const { first_name, last_name, email, password } = req.body
-        const user = await User.create({ first_name, last_name, email, password })
-        user.get
-        return res.json(user)
+    async login(req, res, next) {
+        try {
+            const { email, password } = req.body
+            const userData = await userService.login(email, password)
+            res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+            return res.json(userData)
+        } catch (error) {
+            next(error)
+        }
     }
 
-    async patchUser(req, res) {
-        const { first_name, last_name, email, password } = req.body
-
+    async logout(req, res, next) {
+        try {
+            const {refreshToken} = req.cookies;
+            const token = await userService.logout(refreshToken)
+            res.clearCookie('refreshToken')
+            return res.json(token)
+        } catch (error) {
+            next(error)
+        }
     }
-    async deleteUser(req, res) { }
+
+    async activate(req, res, next) {
+        try {
+            const actvationLink = req.params.link
+            await userService.activate(actvationLink)
+            return res.redirect(process.env.CLIENT_URL)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async refresh(req, res, next) {
+        try {
+            const {refreshToken} = req.cookies;
+            const userData = await userService.refresh(refreshToken)
+            res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+            return res.json(userData)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async getUsers(req, res, next) {
+        try {
+            const users = await userService.getAllUsers()
+            return res.json(users)
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
-module.exports = new userController();
-
-// USER {
-//     firs_name,
-//     last_name,
-//     email,
-//     password
-// }
+module.exports = new userControllers()

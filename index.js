@@ -1,4 +1,5 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const { sequelize } = require('./server.js')
 const path = require('path')
 const app = express()
@@ -10,6 +11,7 @@ const errorMiddleware = require('./middleware/ErrorHandlingMiddleware.js')
 
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))
 app.use(require('./routes/index.routes.js'))
