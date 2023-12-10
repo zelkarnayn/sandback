@@ -1,9 +1,15 @@
+const ApiError = require("../error/ApiError")
 const userService = require("../service/user.service")
+const { validationResult } = require('express-validator')
 
 class userControllers {
-    
+
     async registration(req, res, next) {
         try {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return next(ApiError.badRequest('Ошибка при валидации'))
+            }
             const { email, first_name, last_name, password } = req.body
             const userData = await userService.registration(email, password, first_name, last_name)
             res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
@@ -15,7 +21,10 @@ class userControllers {
 
     async login(req, res, next) {
         try {
-
+            const { email, password } = req.body
+            const userData = await userService.login(email, password)
+            res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+            return res.json(userData)
         } catch (error) {
             next(error)
         }
@@ -23,7 +32,10 @@ class userControllers {
 
     async logout(req, res, next) {
         try {
-
+            const {refreshToken} = req.cookies;
+            const token = await userService.logout(refreshToken)
+            res.clearCookie('refreshToken')
+            return res.json(token)
         } catch (error) {
             next(error)
         }
@@ -41,7 +53,10 @@ class userControllers {
 
     async refresh(req, res, next) {
         try {
-
+            const {refreshToken} = req.cookies;
+            const userData = await userService.refresh(refreshToken)
+            res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+            return res.json(userData)
         } catch (error) {
             next(error)
         }
@@ -49,7 +64,8 @@ class userControllers {
 
     async getUsers(req, res, next) {
         try {
-            res.json(['12', '34'])
+            const users = await userService.getAllUsers()
+            return res.json(users)
         } catch (error) {
             next(error)
         }

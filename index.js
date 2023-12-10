@@ -22,7 +22,7 @@ app.use(errorMiddleware)
 const start = (async () => {
   try {
     await sequelize.authenticate()
-    await sequelize.sync({force: true})
+    await sequelize.sync()
     app.listen(port, () => console.log(`Сервер запущен`))
   } catch (e) {
     console.log(e)
