@@ -9,7 +9,10 @@ const models = require('./models/models.js')
 const fileUpload = require('express-fileupload')
 const errorMiddleware = require('./middleware/ErrorHandlingMiddleware.js')
 
-app.use(cors())
+app.use(cors({
+  credentials: true,
+  origin: ['http://localhost:5174']
+}))
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.static(path.resolve(__dirname, 'static')))
