@@ -1,6 +1,5 @@
 const express = require('express')
 const https = require('https')
-const http = require('http')
 const fs = require('fs')
 const cookieParser = require('cookie-parser')
 const { sequelize } = require('./server.js')
@@ -30,18 +29,15 @@ const start = (async () => {
   try {
     await sequelize.authenticate()
     await sequelize.sync()
-    const httpServer = http.createServer(app)
+
     const httpsServer = https.createServer({
-      key: fs.readFileSync('/etc/letsencrypt/archive/back.sandbook.ru/privkey1.pem'),
-      cert: fs.readFileSync('/etc/letsencrypt/archive/back.sandbook.ru/fullchain1.pem')
+      key: fs.readFileSync('/etc/letsencrypt/live/back.sandbook.ru/privkey.pem'),
+      cert: fs.readFileSync('/etc/letsencrypt/live/back.sandbook.ru/fullchain.pem')
     }, app)
+
     httpsServer.listen(port, () => {
       console.log('HTTPS Server running on port 443')
     })
-    httpServer.listen(3001, () => {
-      console.log('HTTP Server running on port 80')
-    })
-    // app.listen(port, () => console.log(`Сервер запущен`))
   } catch (e) {
     console.log(e)
   }
