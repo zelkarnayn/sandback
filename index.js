@@ -35,10 +35,10 @@ const start = (async () => {
       key: fs.readFileSync('/etc/letsencrypt/archive/back.sandbook.ru/privkey1.pem'),
       cert: fs.readFileSync('/etc/letsencrypt/archive/back.sandbook.ru/fullchain1.pem')
     }, app)
-    httpsServer.listen(443, () => {
+    httpsServer.listen(port, () => {
       console.log('HTTPS Server running on port 443')
     })
-    httpServer.listen(80, () => {
+    httpServer.listen(3001, () => {
       console.log('HTTP Server running on port 80')
     })
     // app.listen(port, () => console.log(`Сервер запущен`))
