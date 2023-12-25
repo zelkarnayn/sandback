@@ -24,6 +24,8 @@
     "express": "^4.18.2",
     "express-fileupload": "^1.4.3",
     "express-validator": "^6.15.0",
+    "http": "^0.0.1-security",
+    "https": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.7",
     "pg": "^8.11.3",
