@@ -35,7 +35,7 @@ class commentController {
         }
     }
 
-    // В params надо передать id комментария
+    // // В params надо передать id комментария, а в body передать id юзера
     async likeComment(req, res) {
         try {
             const { comment_id } = req.params

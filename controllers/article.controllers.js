@@ -4,7 +4,7 @@ const { Article, LikesArticle, FavoriteArticle} = require('../models/models');
 const ApiError = require('../error/ApiError');
 
 class articleControllers {
-    // Необходимая информация для создания статьи- title, text, author, category(VUE, JS, REACT, ANGULAR, TS)
+    // Необходимая информация для создания статьи- title, text, author, image, category(VUE, JS, REACT, ANGULAR, TS)
     async postArticle(req, res, next) {
         try {
             const { title, text, author, category } = req.body;
@@ -86,13 +86,15 @@ class articleControllers {
         }
     }
 
+    // В params надо передать id статьи, а в body передать id юзера и статус лайка
     async likeArticle(req, res) {
         const { article_id } = req.params
-        const { user_id } = req.body
-        const article = await LikesArticle.create({user_id, article_id})
+        const { user_id, like } = req.body
+        const article = await LikesArticle.create({user_id, article_id, like})
         return res.json(article)
     }
 
+    // В params надо передать id статьи, а в body передать id юзера
     async makeFavorite(req, res) {
         try {
             const { article_id } = req.params

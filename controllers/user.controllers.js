@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator')
 
 class userControllers {
 
+    // Для регистрации необходимы email(валидируется), password(валидируется), first_name, last_name
     async registration(req, res, next) {
         try {
             const errors = validationResult(req)
