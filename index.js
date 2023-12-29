@@ -41,8 +41,8 @@ const start = (async () => {
     await sequelize.sync()
     const httpServer = http.createServer(app)
     const httpsServer = https.createServer({
-      key: fs.readFileSync('./keys/privkey.pem'),
-      cert: fs.readFileSync('./keys/fullchain.pem')
+      key: fs.readFileSync('./keys/privkey.pem'), // process.env.PRIV_KEY_SSL
+      cert: fs.readFileSync('./keys/fullchain.pem') // process.env.FULLCHAIN_KEY_SSL
     }, app)
     httpsServer.listen(port, () => {
       console.log('HTTPS Server running on port 443')
