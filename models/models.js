@@ -3,6 +3,11 @@ const { sequelize } = require('../server');
 
 class User extends Model {}
 User.init({
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     first_name: {
         type: DataTypes.STRING,
         allowNull: false
@@ -52,6 +57,11 @@ Token.init({
 
 class Article extends Model {}
 Article.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
     title: {
         type: DataTypes.STRING,
         allowNull: false
@@ -76,27 +86,16 @@ Article.init({
         values: ['REACT', 'JS', 'ANGULAR', 'VUE'],
         defaultValue: 'JS',
         allowNull: false
-    },
-    likes: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: User,
-            key: 'id'
-        }
-    },
-    dislikes: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: User,
-            key: 'id'
-        }
-    },
+    }
 }, {sequelize, modelName: 'Article'});
 
 class Comment extends Model {}
 Comment.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
     article: {
         type: DataTypes.INTEGER,
         references: {
@@ -114,28 +113,55 @@ Comment.init({
             model: User, 
             key: 'id'
         }
-    },
-    likes: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id'
-        }
-    },
-    dislikes: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id'
-        }
-    },
+    }
 }, {sequelize, modelName: 'Comment'});
 
+class LikesArticle extends Model {}
+LikesArticle.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    }
+}, {sequelize, modelName: 'LikesArticle'})
+
+class DislikesArticle extends Model {}
+DislikesArticle.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    }
+}, {sequelize, modelName: 'DislikesArticle'})
+
+class LikesComment extends Model {}
+LikesComment.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    }
+}, {sequelize, modelName: 'LikesComment'})
+
+class DislikesComment extends Model {}
+DislikesComment.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    }
+}, {sequelize, modelName: 'DislikesComment'})
+
 User.hasMany(Article)
+
 Article.belongsTo(User)
 Article.hasMany(Comment)
+
 Comment.belongsTo(Article)
 Comment.belongsTo(User)
+
+
+
 
 
 module.exports = {
