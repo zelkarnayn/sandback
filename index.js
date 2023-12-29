@@ -45,7 +45,7 @@ const start = (async () => {
       cert: fs.readFileSync('./keys/fullchain.pem')     // process.env.FULLCHAIN_KEY_SSL
     }, app)
     httpsServer.listen(port, () => {
-      console.log('HTTPS Server running on port 443')
+      console.log('HTTPS Server Sandbook running')
     })
   } catch (e) {
     console.log(e)

@@ -1,10 +1,10 @@
 const uuid = require('uuid');
 const path = require('path');
-const { Article } = require('../models/models');
+const { Article, LikesArticle, FavoriteArticle} = require('../models/models');
 const ApiError = require('../error/ApiError');
 
 class articleControllers {
-    // Необходимая информация для создания статьи- title, text, author, category(VUE, JS, REACT, ANGULAR)
+    // Необходимая информация для создания статьи- title, text, author, category(VUE, JS, REACT, ANGULAR, TS)
     async postArticle(req, res, next) {
         try {
             const { title, text, author, category } = req.body;
@@ -28,46 +28,80 @@ class articleControllers {
     // Для указания лимита и номера страницы указываются limiy & page (пагинация)
     // Все параметры передаются в query
     async getAllArticles(req, res) {
-        let { author, category, limit, page } = req.query
-        page = page || 1
-        limit = limit || 3
-        let offset = page * limit - limit
-        let articles;
-        if (!author && !category) {
-            articles = await Article.findAndCountAll({ limit, offset })
+        try {
+            let { author, category, limit, page } = req.query
+            page = page || 1
+            limit = limit || 3
+            let offset = page * limit - limit
+            let articles;
+            if (!author && !category) {
+                articles = await Article.findAndCountAll({ limit, offset })
+            }
+            if (author && !category) {
+                articles = await Article.findAndCountAll({ where: { author }, limit, offset })
+            }
+            if (!author && category) {
+                articles = await Article.findAndCountAll({ where: { category }, limit, offset })
+            }
+            if (author && category) {
+                articles = await Article.findAndCountAll({ where: { category, author }, limit, offset })
+            }
+            return res.json(articles)
+        } catch (e) {
+            return res.json(e)
         }
-        if (author && !category) {
-            articles = await Article.findAndCountAll({ where: { author }, limit, offset })
-        }
-        if (!author && category) {
-            articles = await Article.findAndCountAll({ where: { category }, limit, offset })
-        }
-        if (author && category) {
-            articles = await Article.findAndCountAll({ where: { category, author }, limit, offset })
-        }
-        return res.json(articles)
     }
 
     // В params надо передать id статьи
     async getArticle(req, res) {
-        const { id } = req.params
-        const article = await Article.findOne({ where: { id } })
-        return res.json(article)
+        try {
+            const { article_id } = req.params
+            const article = await Article.findOne({ where: { article_id } })
+            return res.json(article)
+        } catch (e) {
+            return res.json(e)
+        }
     }
     
     // В params надо передать id статьи, а всю прочую информация- в body (title, text, author, category(VUE, JS, REACT, ANGULAR))
     async patchArticle(req, res) {
-        const { id } = req.params
-        const { title, text, author, category} = req.body
-        const article = await Article.update({ title, text, author, category }, { where: { id } })
-        return res.json('Статья обновлена')
+        try {
+            const { article_id } = req.params
+            const { title, text, author, category} = req.body
+            const article = await Article.update({ title, text, author, category }, { where: { article_id } })
+            return res.json(article)
+        } catch (e) {
+            return res.json(e)
+        }
     }
 
     // В params надо передать id статьи
     async deleteArticle(req, res) {
-        const { id } = req.params
-        const article = await Article.destroy({ where: { id } })
-        return res.json('Статья удалена')
+        try {
+            const { article_id } = req.params
+            const article = await Article.destroy({ where: { article_id } })
+            return res.json(article)
+        } catch (e) {
+            return res.json(e)
+        }
+    }
+
+    async likeArticle(req, res) {
+        const { article_id } = req.params
+        const { user_id } = req.body
+        const article = await LikesArticle.create({user_id, article_id})
+        return res.json(article)
+    }
+
+    async makeFavorite(req, res) {
+        try {
+            const { article_id } = req.params
+            const { user_id } = req.body
+            const favoriteArticle = await FavoriteArticle.create({user_id, article_id})
+            return res.json(favoriteArticle)
+        } catch (e) {
+            return res.json(e)
+        }
     }
 }
 

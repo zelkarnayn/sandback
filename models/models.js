@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize')
 const { sequelize } = require('../server');
+const {compare} = require("bcrypt");
 
 class User extends Model {}
 User.init({
@@ -83,7 +84,7 @@ Article.init({
     },
     category: {
         type: DataTypes.ENUM,
-        values: ['REACT', 'JS', 'ANGULAR', 'VUE'],
+        values: ['REACT', 'JS', 'ANGULAR', 'VUE', 'TS'],
         defaultValue: 'JS',
         allowNull: false
     }
@@ -122,17 +123,27 @@ LikesArticle.init({
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
+    },
+    like: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: User,
+            key: "id"
+        }
+    },
+    article_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Article,
+            key: "id"
+        }
     }
 }, {sequelize, modelName: 'LikesArticle'})
 
-class DislikesArticle extends Model {}
-DislikesArticle.init({
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    }
-}, {sequelize, modelName: 'DislikesArticle'})
 
 class LikesComment extends Model {}
 LikesComment.init({
@@ -140,19 +151,63 @@ LikesComment.init({
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
+    },
+    like: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: User,
+            key: "id"
+        }
+    },
+    comment_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Comment,
+            key: "id"
+        }
     }
 }, {sequelize, modelName: 'LikesComment'})
 
-class DislikesComment extends Model {}
-DislikesComment.init({
+class FavoriteArticle extends Model {}
+FavoriteArticle.init({
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
+    },
+    like: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: User,
+            key: "id"
+        }
+    },
+    article_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Article,
+            key: "id"
+        }
     }
-}, {sequelize, modelName: 'DislikesComment'})
+}, {sequelize, modelName: 'FavoriteArticle'})
+
 
 User.hasMany(Article)
+Article.belongsTo(User)
+
+User.hasMany(FavoriteArticle)
+FavoriteArticle.belongsTo(User)
+
+FavoriteArticle.hasMany(Article)
+Article.belongsTo(FavoriteArticle)
 
 Article.belongsTo(User)
 Article.hasMany(Comment)
@@ -160,15 +215,24 @@ Article.hasMany(Comment)
 Comment.belongsTo(Article)
 Comment.belongsTo(User)
 
+Comment.hasMany(LikesComment)
+User.hasMany(LikesComment)
+LikesComment.belongsTo(Comment)
+LikesComment.belongsTo(User)
 
-
-
+Article.hasMany(LikesArticle)
+User.hasMany(LikesArticle)
+LikesArticle.belongsTo(User)
+LikesArticle.belongsTo(Article)
 
 module.exports = {
     User,
     Article,
     Comment,
-    Token
+    Token,
+    LikesComment,
+    LikesArticle,
+    FavoriteArticle
 }
 
 // COMMENT {
